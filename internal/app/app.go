@@ -4,38 +4,31 @@ import (
 	"log"
 	"net"
 
-	"github.com/ToxicSozo/GoCryptoExchange/internal/handler"
+	h "github.com/ToxicSozo/GoCryptoExchange/internal/handler"
 )
 
-type Server struct {
-	addr string
-}
+const (
+	HOST = "localhost"
+	PORT = ":8080"
+	TYPE = "tcp"
+)
 
-func NewServer(addr string) *Server {
-	return &Server{
-		addr: addr,
-	}
-}
-
-func (s *Server) Run() error {
-	ln, err := net.Listen("tcp", s.addr)
+func Run() error {
+	listen, err := net.Listen(TYPE, HOST+PORT)
 	if err != nil {
-		log.Fatal("Falied to start server", err)
 		return err
 	}
 
-	defer ln.Close()
+	defer listen.Close()
 
-	log.Println("server is listening on :", s.addr)
+	log.Println("server is listening on ", PORT)
 
 	for {
-		conn, err := ln.Accept()
+		conn, err := listen.Accept()
 		if err != nil {
-			log.Fatal("Error accept connection!")
-
-			continue
+			return err
 		}
 
-		go handler.HandlerConnection(conn)
+		go h.HandleRequest(conn)
 	}
 }

@@ -7,9 +7,7 @@ import (
 )
 
 func main() {
-	server := app.NewServer(":8080")
-
-	if err := server.Run(); err != nil {
+	if err := app.Run(); err != nil {
 		log.Fatal(err)
 	}
 }
